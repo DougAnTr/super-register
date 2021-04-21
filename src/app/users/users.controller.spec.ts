@@ -1,7 +1,20 @@
+class UsersController {
+  async store(userData) {
+    return {
+      id: 1,
+      email: userData.email,
+    };
+  }
+}
+
 describe("UsersControler", () => {
-  it("", async () => {
-    const usersControler = new UsersControler();
-    const newUser = await usersControler.store();
+  it("Should return new user", async () => {
+    const usersControler = new UsersController();
+
+    const newUser = await usersControler.store({
+      email: "any_email@mail.com",
+      password: "any_password",
+    });
 
     expect(newUser).toEqual({
       id: 1,
