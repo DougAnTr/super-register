@@ -16,6 +16,8 @@ export default class UsersController {
         .string()
         .oneOf([yup.ref("password"), null], "Passwords must match")
         .required(),
+      firstName: yup.string().required(),
+      surName: yup.string().required(),
     });
 
     schema.validate(req.body).catch((err) => {
