@@ -6,7 +6,8 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "build:watch": "tsc -w",
-    "start:dev": "yarn build:watch & nodemon --delay 5 -q -w dist dist/index.js"
+    "start:dev": "yarn build:watch & nodemon --delay 5 -q -w dist dist/main.js",
+    "typeorm": "ts-node --transpile-only node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

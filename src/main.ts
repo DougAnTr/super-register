@@ -8,6 +8,7 @@ class App {
   private port: string | number;
 
   constructor() {
+    this.port = process.env.PORT || 4000;
     this.server = express();
     this.config().then(() => {
       this.routes();
@@ -22,7 +23,6 @@ class App {
 
   private async config() {
     await createConnection();
-    this.port = process.env.PORT || 4000;
     this.server.use(express.json);
   }
 
