@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity()
+@Entity("users")
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,8 +14,8 @@ export class UserEntity {
   @Column()
   email: string;
 
-  @Column()
-  password: string;
+  @Column({ select: false })
+  password?: string;
 
   @Column()
   firstName: string;

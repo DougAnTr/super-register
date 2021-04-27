@@ -1,7 +1,14 @@
 import { Request, Response } from "express";
 import * as yup from "yup";
+import { UsersService } from "./users.service";
 
 export default class UsersController {
+  private usersService: UsersService;
+
+  constructor() {
+    this.usersService = new UsersService();
+  }
+
   async store(req: Request, res: Response) {
     const schema = yup.object().shape({
       email: yup.string().email().required(),
@@ -30,6 +37,9 @@ export default class UsersController {
       });
     });
 
-    return res.status(200);
+    const createdUser = await this.usersService.create(req.body);
+    delete createdUser.password;
+
+    return res.status(200).send(createdUser);
   }
 }
