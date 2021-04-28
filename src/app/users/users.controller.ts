@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import * as yup from "yup";
-import { UsersService } from "./users.service";
+import UsersService from "./users.service";
+import { registerSchema } from "./users.validation";
+import { validate } from "../../helpers/validation.helper";
 
 export default class UsersController {
   private usersService: UsersService;
@@ -10,36 +11,34 @@ export default class UsersController {
   }
 
   async store(req: Request, res: Response) {
-    const schema = yup.object().shape({
-      email: yup.string().email().required(),
-      password: yup
-        .string()
-        .matches(
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/,
-          "Password must contain minimum eight characters, at least one upper case letter, one lower case letter, one number and one special character"
-        )
-        .required(),
-      confirm_password: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Passwords must match")
-        .required(),
-      firstName: yup.string().required(),
-      surName: yup.string().required(),
-    });
+    try {
+      const validation = await validate(req.body, registerSchema);
 
-    schema.validate(req.body).catch((err) => {
-      return res.status(400).send({
-        message: "Dados inválidos.",
-        error: {
-          path: err.path,
-          errors: err.errors,
-        },
-      });
-    });
+      if (!validation.status && validation.error !== undefined) {
+        return res.status(400).send({
+          message: "Dados inválidos",
+          error: {
+            path: validation.error.path,
+            errors: validation.error,
+          },
+        });
+      }
 
-    const createdUser = await this.usersService.create(req.body);
-    delete createdUser.password;
+      if (await this.usersService.findByEmail(req.body.email)) {
+        return res.status(400).send({
+          message: "Dados inválidos",
+          error: {
+            path: "email",
+            errors: "Este e-mail já está sendo usado",
+          },
+        });
+      }
 
-    return res.status(200).send(createdUser);
+      const createdUser = await this.usersService.create(req.body);
+
+      return res.status(200).send(createdUser);
+    } catch (e) {
+      return res.status(501).send("Erro interno");
+    }
   }
 }

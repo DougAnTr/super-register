@@ -1,10 +1,12 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import Encrypter from "../../adapters/encrypter.adapter";
 
 @Entity("users")
 export class UserEntity {
@@ -15,7 +17,7 @@ export class UserEntity {
   email: string;
 
   @Column({ select: false })
-  password?: string;
+  password: string;
 
   @Column()
   firstName: string;
@@ -28,4 +30,9 @@ export class UserEntity {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: string;
+
+  @BeforeInsert()
+  async encryptPassword() {
+    this.password = await Encrypter.encrypt(this.password);
+  }
 }
