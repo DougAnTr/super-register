@@ -3,7 +3,7 @@ import routes from "./routes";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import dotenv from "dotenv";
-import { authMiddleware } from "./middlewares/auth";
+import { authMiddleware } from "./middlewares/auth.middleware";
 
 function bootstrap() {
   const server = express();
