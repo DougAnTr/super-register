@@ -1,10 +1,9 @@
-import express, { Response } from "express";
+import express from "express";
 import routes from "./routes";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import dotenv from "dotenv";
-import Jwt from "./adapters/jwt";
-import { Request } from "./interfaces/express";
+import { authMiddleware } from "./middlewares/auth";
 
 function bootstrap() {
   const server = express();
@@ -14,39 +13,8 @@ function bootstrap() {
 
   createConnection().then(() => {
     server.use(express.json());
+    server.use(authMiddleware);
 
-    server.use((req: Request, res: Response, next) => {
-      const allowedRoutes = ["login", "users.post"];
-
-      try {
-        if (
-          allowedRoutes.findIndex((r) => {
-            const [route, method] = r.split(".");
-
-            if (route === req.url.substr(1)) {
-              if (method && method !== req.method) {
-                return false;
-              }
-
-              return true;
-            }
-
-            return false;
-          }) !== -1
-        ) {
-          return next();
-        }
-
-        if (!req.headers.authorization) {
-          return res.status(401).send("Unauthorized");
-        }
-
-        const token = req.headers.authorization.split("Bearer ")[1];
-        req.user = Jwt.verifyToken(token);
-      } catch (error) {
-        return res.status(401).send("Invalid token");
-      }
-    });
     routes.forEach((routeConfig) => {
       const controller = new routeConfig.controller();
 
