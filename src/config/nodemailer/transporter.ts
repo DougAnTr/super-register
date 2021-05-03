@@ -1,8 +1,11 @@
-import aws, { SES } from "@aws-sdk/client-ses";
+import * as aws from "@aws-sdk/client-ses";
 import { createTransport } from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
-const ses = new SES({
-  region: "us-east-1",
+const ses = new aws.SES({
+  region: "sa-east-1",
+  apiVersion: "2021-05-03",
   credentials: {
     accessKeyId: process.env.AWS_KEY || "",
     secretAccessKey: process.env.AWS_SECRET || "",

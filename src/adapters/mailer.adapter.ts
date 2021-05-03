@@ -2,13 +2,9 @@ import Mail from "nodemailer/lib/mailer";
 import { transporter } from "../config/nodemailer/transporter";
 
 export default class Mailer {
-  transporter: Mail;
+  public static async sendEmail(data: Mail.Options) {
+    data.from = "douglas.trofino@outlook.com";
 
-  constructor() {
-    this.transporter = transporter;
-  }
-
-  async sendEmail(data: Mail.Options) {
-    return this.transporter.sendMail(data);
+    return transporter.sendMail(data);
   }
 }

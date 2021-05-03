@@ -21,4 +21,12 @@ export default class UsersService {
       select: ["id", "password"],
     });
   }
+
+  async update(criteria: any, data: DeepPartial<UserEntity>) {
+    return this.usersRepository.update(criteria, data);
+  }
+
+  async findById(id: number) {
+    return this.usersRepository.findOne(id);
+  }
 }

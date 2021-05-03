@@ -25,6 +25,9 @@ export class UserEntity {
   @Column()
   surName: string;
 
+  @Column({ name: "verified_at" })
+  verifiedAt: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;
 

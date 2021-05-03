@@ -28,7 +28,7 @@ export const authMiddleware = (
 ) => {
   try {
     const isPublicRoute = verifyPublicRoute(req);
-    console.log(isPublicRoute);
+
     if (isPublicRoute) {
       return next();
     }
